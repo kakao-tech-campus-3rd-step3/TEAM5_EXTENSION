@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Daily First Visit Redirector",
+  "name": "DailyQ",
   "version": "1.0",
-  "description": "매일 처음 인터넷 접속 시 원하는 주소로 리다이렉트합니다",
+  "description": "매일 문제 하나씩 풀도록합니다",
   "permissions": [
     "storage",
     "activeTab",
