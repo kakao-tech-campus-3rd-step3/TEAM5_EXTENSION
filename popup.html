@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Redirector 설정</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>🌅 Daily Redirector</h2>
+      <p>매일 첫 방문 시 리다이렉트 설정</p>
+    </div>
+    
+    <div class="content">
+      <div class="form-group">
+        <label for="enabled">
+          <input type="checkbox" id="enabled"> 기능 활성화
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label for="redirectUrl">리다이렉트 URL:</label>
+        <input type="url" id="redirectUrl" placeholder="https://team5-fe-ivory.vercel.app" />
+      </div>
+      
+      <div class="form-group">
+        <button id="saveBtn">저장</button>
+        <button id="testBtn" class="secondary">테스트</button>
+      </div>
+      
+      <div class="info">
+        <p><strong>사용법:</strong></p>
+        <ul>
+          <li>원하는 URL을 입력하고 저장하세요</li>
+          <li>매일 처음 웹페이지 접속 시 설정된 URL로 이동합니다</li>
+          <li>하루에 한 번만 리다이렉트됩니다</li>
+        </ul>
+      </div>
+      
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
