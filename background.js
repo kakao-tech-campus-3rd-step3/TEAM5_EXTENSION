@@ -3,7 +3,7 @@
 // 익스텐션 설치 시 기본값 설정
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({
-    redirectUrl: 'https://team5-fe-ivory.vercel.app/',
+    redirectUrl: 'dailyq.my',
     enabled: true,
     lastRedirectDate: ''
   });
