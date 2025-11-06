@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const data = await chrome.storage.sync.get(['redirectUrl', 'enabled', 'lastRedirectDate']);
   
   enabledCheckbox.checked = data.enabled !== false; // 기본값 true
-  redirectUrlInput.value = data.redirectUrl || 'https://team5-fe-ivory.vercel.app/';
+  redirectUrlInput.value = data.redirectUrl || 'https://www.dailyq.my';
 
   // 상태 메시지 표시 함수
   function showStatus(message, isError = false) {
@@ -24,36 +24,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, 3000);
   }
 
+  // URL 유효성 검증 및 자동 보정 함수
+  function normalizeUrl(string) {
+    if (!string) return null;
+    
+    let url = string.trim();
+    
+    // 프로토콜이 없으면 https:// 추가
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+    
+    try {
+      new URL(url);
+      return url;
+    } catch (_) {
+      return null;
+    }
+  }
+  
   // URL 유효성 검증 함수
   function isValidUrl(string) {
-    try {
-      new URL(string);
-      return true;
-    } catch (_) {
-      return false;
-    }
+    return normalizeUrl(string) !== null;
   }
 
   // 저장 버튼 클릭 이벤트
   saveBtn.addEventListener('click', async () => {
-    const url = redirectUrlInput.value.trim();
+    const inputUrl = redirectUrlInput.value.trim();
     const enabled = enabledCheckbox.checked;
 
-    if (!url) {
+    if (!inputUrl) {
       showStatus('URL을 입력해주세요.', true);
       return;
     }
 
-    if (!isValidUrl(url)) {
+    const normalizedUrl = normalizeUrl(inputUrl);
+    if (!normalizedUrl) {
       showStatus('올바른 URL 형식이 아닙니다.', true);
       return;
     }
 
     try {
       await chrome.storage.sync.set({
-        redirectUrl: url,
+        redirectUrl: normalizedUrl,
         enabled: enabled
       });
+      
+      // 입력창에 정규화된 URL 표시
+      redirectUrlInput.value = normalizedUrl;
       
       showStatus('설정이 저장되었습니다!');
     } catch (error) {
@@ -64,14 +82,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 테스트 버튼 클릭 이벤트
   testBtn.addEventListener('click', async () => {
-    const url = redirectUrlInput.value.trim();
+    const inputUrl = redirectUrlInput.value.trim();
 
-    if (!url) {
+    if (!inputUrl) {
       showStatus('먼저 URL을 입력해주세요.', true);
       return;
     }
 
-    if (!isValidUrl(url)) {
+    const normalizedUrl = normalizeUrl(inputUrl);
+    if (!normalizedUrl) {
       showStatus('올바른 URL 형식이 아닙니다.', true);
       return;
     }
@@ -81,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await chrome.storage.sync.set({ lastRedirectDate: '' });
       
       // 새 탭에서 테스트 URL로 이동
-      chrome.tabs.create({ url: url });
+      chrome.tabs.create({ url: normalizedUrl });
       
       showStatus('테스트 완료! 새 탭에서 확인하세요.');
     } catch (error) {
@@ -103,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const data = await chrome.storage.sync.get(['redirectUrl']);
       await chrome.storage.sync.set({
         enabled: enabledCheckbox.checked,
-        redirectUrl: data.redirectUrl || 'https://team5-fe-ivory.vercel.app/'
+        redirectUrl: data.redirectUrl || 'https://www.dailyq.my'
       });
       
       showStatus(`기능이 ${enabledCheckbox.checked ? '활성화' : '비활성화'}되었습니다.`);

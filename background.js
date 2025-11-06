@@ -3,7 +3,7 @@
 // 익스텐션 설치 시 기본값 설정
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({
-    redirectUrl: 'dailyq.my',
+    redirectUrl: 'https://www.dailyq.my',
     enabled: true,
     lastRedirectDate: ''
   });
@@ -70,7 +70,12 @@ async function checkAndRedirect(tabId, url) {
 
     // 오늘 아직 리다이렉트하지 않았다면
     if (lastRedirectDate !== today) {
-      const redirectUrl = data.redirectUrl || 'https://team5-fe-ivory.vercel.app/';
+      let redirectUrl = data.redirectUrl || 'https://www.dailyq.my';
+      
+      // URL에 프로토콜이 없으면 https:// 추가
+      if (redirectUrl && !redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+        redirectUrl = 'https://' + redirectUrl;
+      }
       
       // 이미 리다이렉트 URL이라면 무한 루프 방지
       if (url === redirectUrl || url.startsWith(redirectUrl)) {
